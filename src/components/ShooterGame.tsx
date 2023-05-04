@@ -7,30 +7,25 @@ import UIGameOver from './UIGameOver';
 import UIGamePauseButton from './UIGamePauseButton';
 
 const ShooterGame = () => {
-  const updateStatus = (status: string, value: any) => {
-    if (status === 'score') setScore((prev) => prev + value);
-    else {
-      setStatus(status);
-      switch (status) {
-        case 'game_over':
-          game.shutdown();
-          break;
-        case 'restart':
-          game.start();
-          setScore(0);
-          break;
-        case 'paused':
-          game.pause();
-          break;
-        case 'continue':
-          game.start();
-          break;
-      }
-      setGame(game);
+  const updateStatus = (status: string) => {
+    setStatus(status);
+    switch (status) {
+      case 'game_over':
+        game.shutdown();
+        break;
+      case 'restart':
+        game.start();
+        break;
+      case 'paused':
+        game.pause();
+        break;
+      case 'continue':
+        game.continue();
+        break;
     }
+    setGame(game);
   };
   const [status, setStatus] = useState('');
-  const [score, setScore] = useState(0);
   const [game, setGame] = useState<GameController>(
     new GameController(updateStatus)
   );
@@ -52,13 +47,13 @@ const ShooterGame = () => {
   return (
     <GameContent>
       <Canvas game={game} />
-      <UIScore score={score} />
       <UIGamePauseButton
         onClick={(paused) =>
           paused ? game.updateStatus('paused') : game.updateStatus('continue')
         }
       />
       {renderMenuPopup()}
+      <UIScore score={game?.score} highScore={game?.highScore} />
     </GameContent>
   );
 };

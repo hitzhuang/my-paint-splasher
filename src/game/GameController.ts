@@ -5,17 +5,21 @@ import Enemy from './Enemy';
 import Particle from './Particle';
 import Projectile from './Projectile';
 
+const GAME_HIGH_SCORE = 'shooter-game-highscore';
+
 class GameController {
   player: Player;
+  score!: number;
+  highScore!: number;
   projectiles!: Array<Projectile>;
   particles!: Array<Particle>;
   enemies!: Array<Enemy>;
   enemyInterval!: any;
   gameOver!: boolean;
-  updateStatus: (status: string, value?: any) => void;
+  updateStatus: (status: string) => void;
   fireEventListener: any;
 
-  constructor(updateStatus: (status: string, value?: any) => void) {
+  constructor(updateStatus: (status: string) => void) {
     this.player = new Player(20, '#ffffff', 10, 100);
     this.reset();
     this.updateStatus = updateStatus;
@@ -23,12 +27,19 @@ class GameController {
   }
 
   reset() {
+    this.highScore = parseInt(localStorage.getItem(GAME_HIGH_SCORE) ?? '0');
     this.projectiles = [];
     this.enemies = [];
     this.particles = [];
   }
 
   start() {
+    this.score = 0;
+    this.reset();
+    this.continue();
+  }
+
+  continue() {
     this.fireEventListener = this.fire.bind(this);
     window.addEventListener('click', this.fireEventListener, true);
     this.enemyInterval = this.spawnEnemies();
@@ -43,6 +54,9 @@ class GameController {
   }
 
   shutdown() {
+    if (this.highScore < this.score) {
+      localStorage.setItem(GAME_HIGH_SCORE, this.score.toString());
+    }
     this.pause();
     this.reset();
   }
@@ -55,24 +69,25 @@ class GameController {
       ctx.fillStyle = 'rgba(0,0,0,0.1)';
       ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
       this.player.update(props);
-      this.projectiles.forEach((p: Projectile, index: number) => {
-        if (p.toRemove) this.projectiles.splice(index, 1);
-        else p.update(props);
+      this.projectiles.forEach((projectile: Projectile, index: number) => {
+        if (projectile.toRemove) this.projectiles.splice(index, 1);
+        else projectile.update(props);
       });
-      this.enemies.forEach((e: Enemy, index: number) => {
-        if (e.isPlayerHit()) this.updateStatus('game_over');
+      this.enemies.forEach((enemy: Enemy, index: number) => {
+        if (enemy.isPlayerHit()) this.updateStatus('game_over');
         this.particles = [
           ...this.particles,
-          ...e.updateDamaged(this.projectiles, (score) =>
-            this.updateStatus('score', score)
-          ),
+          ...enemy.updateDamaged(this.projectiles, (score) => {
+            this.score += score;
+            this.updateStatus(this.score.toString());
+          }),
         ];
-        if (e.toRemove) this.enemies.splice(index, 1);
-        else e.update(props);
+        if (enemy.toRemove) this.enemies.splice(index, 1);
+        else enemy.update(props);
       });
-      this.particles.forEach((p: Particle, index: number) => {
-        if (p.toRemove) this.particles.splice(index, 1);
-        else p.update(props);
+      this.particles.forEach((particle: Particle, index: number) => {
+        if (particle.toRemove) this.particles.splice(index, 1);
+        else particle.update(props);
       });
     }
   }
