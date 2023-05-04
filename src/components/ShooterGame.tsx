@@ -5,6 +5,7 @@ import Canvas from './Canvas';
 import GameContent from './GameContent';
 import UIGameOver from './UIGameOver';
 import UIGamePauseButton from './UIGamePauseButton';
+import UINewGame from './UINewGame';
 
 const ShooterGame = () => {
   const updateStatus = (status: string) => {
@@ -31,12 +32,19 @@ const ShooterGame = () => {
   );
 
   useEffect(() => {
-    game.start();
+    game.updateStatus('new_game');
     return () => game.shutdown();
   }, [game]);
 
   const renderMenuPopup = () => {
     switch (status) {
+      case 'new_game':
+        return (
+          <UINewGame
+            onStart={() => game.updateStatus('restart')}
+            onSelect={(color) => (game.player.color = color)}
+          />
+        );
       case 'game_over':
         return <UIGameOver onRestart={() => game.updateStatus('restart')} />;
       default:

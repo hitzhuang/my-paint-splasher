@@ -49,7 +49,7 @@ const UIGamePauseButton = ({ onClick }: UIGamePauseButtonProps) => {
     <div className="select-none absolute top-2 right-2">
       <button
         onClick={handleClick}
-        className="border-stone-100 text-white text-4xl bg-black/10 active:scale-90 border-2 p-2 border-white/30"
+        className="border-stone-100 border-white/30 border-2 text-white text-4xl bg-black/10 p-2 active:scale-90"
       >
         {paused ? <ContinueIcon /> : <PauseIcon />}
       </button>

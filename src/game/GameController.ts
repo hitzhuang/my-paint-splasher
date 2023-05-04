@@ -15,7 +15,7 @@ class GameController {
   particles!: Array<Particle>;
   enemies!: Array<Enemy>;
   enemyInterval!: any;
-  gameOver!: boolean;
+  gamePaused!: boolean;
   updateStatus: (status: string) => void;
   fireEventListener: any;
 
@@ -23,7 +23,7 @@ class GameController {
     this.player = new Player(20, '#ffffff', 10, 100);
     this.reset();
     this.updateStatus = updateStatus;
-    this.gameOver = false;
+    this.gamePaused = false;
   }
 
   reset() {
@@ -43,11 +43,11 @@ class GameController {
     this.fireEventListener = this.fire.bind(this);
     window.addEventListener('click', this.fireEventListener, true);
     this.enemyInterval = this.spawnEnemies();
-    this.gameOver = false;
+    this.gamePaused = false;
   }
 
   pause() {
-    this.gameOver = true;
+    this.gamePaused = true;
     window.removeEventListener('click', this.fireEventListener, true);
     clearInterval(this.enemyInterval);
     this.projectiles.pop(); // can not avoid last click, so remove the last projectitle
@@ -62,7 +62,7 @@ class GameController {
   }
 
   update(props: CanvasProps) {
-    if (this.gameOver) return;
+    if (this.gamePaused) return;
 
     let ctx = props.ctx;
     if (ctx) {
@@ -99,23 +99,23 @@ class GameController {
   }
 
   fire(e: MouseEvent) {
-    if (this.gameOver) return;
+    if (this.gamePaused) return;
 
-    console.log('fire');
+    // console.log('fire');
 
     let dx = e.clientX - this.player.x;
     let dy = e.clientY - this.player.y;
     let dv = getDistance(dx, dy);
     let velocity = { x: (dx / dv) * 5, y: (dy / dv) * 5 };
     this.projectiles.push(
-      new Projectile(this.player.x, this.player.y, velocity)
+      new Projectile(this.player.x, this.player.y, velocity, this.player.color)
     );
   }
 
   spawnEnemies() {
     let index = 0;
     return setInterval(() => {
-      console.log('enemy');
+      // console.log('enemy');
 
       let x = 0;
       let y = 0;
