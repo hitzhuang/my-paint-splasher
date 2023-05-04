@@ -1,10 +1,10 @@
 import { useState } from 'react';
 
-interface UIGamePauseButtonProps {
+interface PauseIconButtonProps {
   onClick: (paused: boolean) => void;
 }
 
-const UIGamePauseButton = ({ onClick }: UIGamePauseButtonProps) => {
+const PauseIconButton = ({ onClick }: PauseIconButtonProps) => {
   const [paused, setPaused] = useState(false);
 
   const handleClick = (e: any) => {
@@ -57,4 +57,4 @@ const UIGamePauseButton = ({ onClick }: UIGamePauseButtonProps) => {
   );
 };
 
-export default UIGamePauseButton;
+export default PauseIconButton;

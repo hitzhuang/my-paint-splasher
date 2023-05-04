@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import GameController from '../game/GameController';
-import UIScore from './UIScore';
 import Canvas from './Canvas';
 import GameContent from './GameContent';
-import UIGameOver from './UIGameOver';
-import UIGamePauseButton from './UIGamePauseButton';
+import UIScore from './UIScore';
 import UINewGame from './UINewGame';
+import UIGameOver from './UIGameOver';
+import PauseIconButton from './PauseIconButton';
 
 const ShooterGame = () => {
   const updateStatus = (status: string) => {
@@ -55,7 +55,7 @@ const ShooterGame = () => {
   return (
     <GameContent>
       <Canvas game={game} />
-      <UIGamePauseButton
+      <PauseIconButton
         onClick={(paused) =>
           paused ? game.updateStatus('paused') : game.updateStatus('continue')
         }

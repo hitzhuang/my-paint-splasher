@@ -8,7 +8,7 @@ const SelectButton = ({ id, onClick, color }: SelectButtonProps) => {
   return (
     <button
       onClick={() => onClick(id)}
-      className={`h-20 w-20 m-2 rounded-full active:scale-95 border-8 ${color}`}
+      className={`h-20 w-20 m-2 rounded-full duration-500 border-8 ${color}`}
     ></button>
   );
 };

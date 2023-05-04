@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import ActionButton from './ActionButton';
 import SelectButton from './SelectButton';
-import UIOverlay from './UIOverlay';
+import UIBackdrop from './UIBackdrop';
 
 interface UINewGameProps {
   onStart: () => void;
@@ -9,6 +9,7 @@ interface UINewGameProps {
 }
 
 const UINewGame = ({ onStart, onSelect }: UINewGameProps) => {
+  const [open, setOpen] = useState(true);
   const [color, setColor] = useState('white');
   const handleSelect = (selectedColor: string) => {
     setColor(selectedColor);
@@ -33,9 +34,13 @@ const UINewGame = ({ onStart, onSelect }: UINewGameProps) => {
         break;
     }
   };
+  const handleClick = () => {
+    setOpen(false);
+    setTimeout(() => onStart(), 500);
+  };
 
   return (
-    <UIOverlay>
+    <UIBackdrop open={open}>
       <h1 className="text-white text-5xl font-extrabold text-center">
         Choose Your Favorite Color
       </h1>
@@ -44,47 +49,47 @@ const UINewGame = ({ onStart, onSelect }: UINewGameProps) => {
           id="white"
           onClick={handleSelect}
           color={`bg-white ${
-            color === 'white' ? 'border-black/50' : 'border-white'
+            color === 'white' ? 'border-gray/50' : 'border-white'
           }`}
         />
         <SelectButton
           id="red-300"
           onClick={handleSelect}
           color={`bg-red-300 ${
-            color === 'red-300' ? 'border-black/50' : `border-red-300`
+            color === 'red-300' ? 'border-white/50' : `border-red-300`
           }`}
         />
         <SelectButton
           id="yellow-200"
           onClick={handleSelect}
           color={`bg-yellow-200 ${
-            color === 'yellow-200' ? 'border-black/50' : `border-yellow-200`
+            color === 'yellow-200' ? 'border-white/80' : `border-yellow-200`
           }`}
         />
         <SelectButton
           id="green-300"
           onClick={handleSelect}
           color={`bg-green-300 ${
-            color === 'green-300' ? 'border-black/50' : `border-green-300`
+            color === 'green-300' ? 'border-white/70' : `border-green-300`
           }`}
         />
         <SelectButton
           id="purple-300"
           onClick={handleSelect}
           color={`bg-purple-300 ${
-            color === 'purple-300' ? 'border-black/50' : `border-purple-300`
+            color === 'purple-300' ? 'border-white/50' : `border-purple-300`
           }`}
         />
         <SelectButton
           id="blue-300"
           onClick={handleSelect}
           color={`bg-blue-300 ${
-            color === 'blue-300' ? 'border-black/50' : `border-blue-300`
+            color === 'blue-300' ? 'border-white/50' : `border-blue-300`
           }`}
         />
       </div>
-      <ActionButton label="START" onClick={onStart} />
-    </UIOverlay>
+      <ActionButton label="START" onClick={handleClick} />
+    </UIBackdrop>
   );
 };
 
