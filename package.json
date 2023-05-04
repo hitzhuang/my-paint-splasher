@@ -1,6 +1,7 @@
 {
   "name": "my-painter-killer",
   "version": "0.1.0",
+  "homepage": "https://hitzhuang.github.io/my-painter-killer",
   "private": true,
   "dependencies": {
     "@headlessui/react": "^1.7.14",
@@ -21,7 +22,8 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "BUILD_PATH='./docs' react-scripts build",
+    "build": "react-scripts build",
+    "deploy": "gh-pages -d build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -45,6 +47,7 @@
   },
   "devDependencies": {
     "autoprefixer": "^10.4.14",
+    "gh-pages": "^5.0.0",
     "postcss": "^8.4.23",
     "tailwindcss": "^3.3.2"
   }
