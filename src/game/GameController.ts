@@ -1,12 +1,15 @@
-import { ProjectileDefaultRadius, getDistance } from './Constant';
+import {
+  GAME_HIGH_SCORE,
+  ProjectileDefaultRadius,
+  SfxTypes,
+  getDistance,
+} from './Constant';
 import { CanvasProps } from './GameObject';
 import Player from './Player';
 import Enemy from './Enemy';
 import Particle from './Particle';
 import Projectile from './Projectile';
-import SoundManager, { SfxTypes } from './SoundManager';
-
-const GAME_HIGH_SCORE = 'shooter-game-highscore';
+import SoundManager from './SoundManager';
 
 class GameController {
   player: Player;
@@ -34,12 +37,11 @@ class GameController {
     this.projectiles = [];
     this.enemies = [];
     this.particles = [];
-    this.soundMgr.bgMusic.currentTime = 0;
   }
 
   start() {
     this.score = 0;
-    this.soundMgr.playBgMusic();
+    this.soundMgr.bgMusic.play();
     this.reset();
     this.continue();
   }
@@ -49,11 +51,11 @@ class GameController {
     window.addEventListener('click', this.fireEventListener, true);
     this.enemyInterval = this.spawnEnemies();
     this.gamePaused = false;
-    this.soundMgr.playBgMusic();
+    this.soundMgr.bgMusic.mute(false);
   }
 
   pause() {
-    this.soundMgr.playBgMusic('paused');
+    this.soundMgr.bgMusic.mute(true);
     this.gamePaused = true;
     window.removeEventListener('click', this.fireEventListener, true);
     clearInterval(this.enemyInterval);
@@ -66,6 +68,7 @@ class GameController {
     }
     this.pause();
     this.reset();
+    this.soundMgr.bgMusic.stop();
   }
 
   update(props: CanvasProps) {
@@ -112,7 +115,7 @@ class GameController {
     let dy = e.clientY - this.player.y;
     let dv = getDistance(dx, dy);
     let velocity = { x: (dx / dv) * 5, y: (dy / dv) * 5 };
-    this.soundMgr.playSFX(SfxTypes.fire);
+    this.soundMgr.playSFX(SfxTypes.FIRE);
     this.projectiles.push(
       new Projectile(this.player.x, this.player.y, velocity, this.player.color)
     );

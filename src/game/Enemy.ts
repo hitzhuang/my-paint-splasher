@@ -1,6 +1,7 @@
 import { gsap } from 'gsap';
 import {
   ProjectileDefaultRadius,
+  SfxTypes,
   getDistance,
   hitExtraScore,
   hitScore,
@@ -8,7 +9,7 @@ import {
 import Player from './Player';
 import Projectile, { IVelocity } from './Projectile';
 import Particle from './Particle';
-import SoundManager, { SfxTypes } from './SoundManager';
+import SoundManager from './SoundManager';
 
 class Enemy extends Projectile {
   player: Player;
@@ -46,7 +47,7 @@ class Enemy extends Projectile {
       let dv = getDistance(dx, dy);
       if (dv <= this.radius + p.radius) {
         // play sound effect and mark to be removed
-        soundMgr.playSFX(SfxTypes.hit);
+        soundMgr.playSFX(SfxTypes.HIT);
         p.toRemove = true;
 
         // enemy shrinked

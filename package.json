@@ -1,6 +1,6 @@
 {
   "name": "my-paint-splasher",
-  "version": "0.2.3",
+  "version": "0.2.7",
   "homepage": "https://hitzhuang.github.io/my-paint-splasher",
   "private": true,
   "dependencies": {
@@ -9,11 +9,13 @@
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "@types/howler": "^2.2.7",
     "@types/jest": "^27.5.2",
     "@types/node": "^16.18.24",
     "@types/react": "^18.0.38",
     "@types/react-dom": "^18.0.11",
     "gsap": "^3.11.5",
+    "howler": "^2.2.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
@@ -25,7 +27,9 @@
     "build": "react-scripts build",
     "deploy": "gh-pages -d build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "gh-pages": "NODE_DEBUG=gh-pages gh-pages -d build",
+    "gh-clean": "gh-pages-clean gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [

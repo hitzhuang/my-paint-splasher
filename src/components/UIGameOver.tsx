@@ -16,7 +16,7 @@ const UIGameOver = ({ onRestart }: UIGameOverProps) => {
   return (
     <UIBackdrop open={open}>
       <UITitle
-        sx="lg:text-8xl md:text-7xl text-5xl mb-10"
+        sx="lg:text-8xl md:text-7xl text-6xl mb-10"
         message="GAME OVER"
       />
       <ActionButton label="RESTART" onClick={handleClick} />
