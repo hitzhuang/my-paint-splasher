@@ -4,6 +4,7 @@ import Player from './Player';
 import Enemy from './Enemy';
 import Particle from './Particle';
 import Projectile from './Projectile';
+import SoundManager, { SfxTypes } from './SoundManager';
 
 const GAME_HIGH_SCORE = 'shooter-game-highscore';
 
@@ -18,12 +19,14 @@ class GameController {
   gamePaused!: boolean;
   updateStatus: (status: string) => void;
   fireEventListener: any;
+  soundMgr: SoundManager;
 
   constructor(updateStatus: (status: string) => void) {
     this.player = new Player(20, '#ffffff', 10, 100);
     this.reset();
     this.updateStatus = updateStatus;
     this.gamePaused = false;
+    this.soundMgr = new SoundManager();
   }
 
   reset() {
@@ -77,7 +80,7 @@ class GameController {
         if (enemy.isPlayerHit()) this.updateStatus('game_over');
         this.particles = [
           ...this.particles,
-          ...enemy.updateDamaged(this.projectiles, (score) => {
+          ...enemy.updateDamaged(this.soundMgr, this.projectiles, (score) => {
             this.score += score;
             this.updateStatus(this.score.toString());
           }),
@@ -101,12 +104,11 @@ class GameController {
   fire(e: MouseEvent) {
     if (this.gamePaused) return;
 
-    // console.log('fire');
-
     let dx = e.clientX - this.player.x;
     let dy = e.clientY - this.player.y;
     let dv = getDistance(dx, dy);
     let velocity = { x: (dx / dv) * 5, y: (dy / dv) * 5 };
+    this.soundMgr.playSFX(SfxTypes.fire);
     this.projectiles.push(
       new Projectile(this.player.x, this.player.y, velocity, this.player.color)
     );

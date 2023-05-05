@@ -8,6 +8,7 @@ import {
 import Player from './Player';
 import Projectile, { IVelocity } from './Projectile';
 import Particle from './Particle';
+import SoundManager, { SfxTypes } from './SoundManager';
 
 class Enemy extends Projectile {
   player: Player;
@@ -34,6 +35,7 @@ class Enemy extends Projectile {
   }
 
   updateDamaged(
+    soundMgr: SoundManager,
     projectiles: Array<Projectile>,
     updateScore: (score: number) => void
   ) {
@@ -43,14 +45,16 @@ class Enemy extends Projectile {
       let dy = this.y - p.y;
       let dv = getDistance(dx, dy);
       if (dv <= this.radius + p.radius) {
-        // mark to be removed
+        // play sound effect and mark to be removed
+        soundMgr.playSFX(SfxTypes.hit);
         p.toRemove = true;
 
-        // enemy shrink
+        // enemy shrinked
         let radius = this.radius;
         radius -= p.radius * 2.5;
-        if (radius > 0) updateScore(hitScore);
-        else {
+        if (radius > 0) {
+          updateScore(hitScore);
+        } else {
           updateScore(hitExtraScore);
           radius = 0;
         }
