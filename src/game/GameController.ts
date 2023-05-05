@@ -22,11 +22,11 @@ class GameController {
   soundMgr: SoundManager;
 
   constructor(updateStatus: (status: string) => void) {
+    this.soundMgr = new SoundManager();
     this.player = new Player(20, '#ffffff', 10, 100);
     this.reset();
     this.updateStatus = updateStatus;
     this.gamePaused = false;
-    this.soundMgr = new SoundManager();
   }
 
   reset() {
@@ -34,10 +34,12 @@ class GameController {
     this.projectiles = [];
     this.enemies = [];
     this.particles = [];
+    this.soundMgr.bgMusic.currentTime = 0;
   }
 
   start() {
     this.score = 0;
+    this.soundMgr.playBgMusic();
     this.reset();
     this.continue();
   }
@@ -47,9 +49,11 @@ class GameController {
     window.addEventListener('click', this.fireEventListener, true);
     this.enemyInterval = this.spawnEnemies();
     this.gamePaused = false;
+    this.soundMgr.playBgMusic();
   }
 
   pause() {
+    this.soundMgr.playBgMusic('paused');
     this.gamePaused = true;
     window.removeEventListener('click', this.fireEventListener, true);
     clearInterval(this.enemyInterval);

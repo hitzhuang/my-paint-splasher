@@ -42,7 +42,7 @@ const UINewGame = ({ onStart, onSelect }: UINewGameProps) => {
 
   return (
     <UIBackdrop open={open}>
-      <UITitle message="Choose Your Favorite Color" sx="text-5xl " />
+      <UITitle message="Choose Your Favorite Color" sx="text-5xl" />
       <div className="grid grid-cols-3 sm:grid-cols-6 my-8">
         <SelectButton
           id="white"
