@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import ActionButton from './ActionButton';
 import UIBackdrop from './UIBackdrop';
+import UITitle from './UITitle';
 
 interface UIGameOverProps {
   onRestart: () => void;
@@ -14,7 +15,10 @@ const UIGameOver = ({ onRestart }: UIGameOverProps) => {
   };
   return (
     <UIBackdrop open={open}>
-      <h1 className=" text-white text-8xl font-extrabold mb-10">GAME OVER</h1>
+      <UITitle
+        sx="lg:text-8xl md:text-7xl text-5xl mb-10"
+        message="GAME OVER"
+      />
       <ActionButton label="RESTART" onClick={handleClick} />
     </UIBackdrop>
   );

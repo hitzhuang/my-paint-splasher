@@ -2,6 +2,7 @@ import { useState } from 'react';
 import ActionButton from './ActionButton';
 import SelectButton from './SelectButton';
 import UIBackdrop from './UIBackdrop';
+import UITitle from './UITitle';
 
 interface UINewGameProps {
   onStart: () => void;
@@ -41,10 +42,8 @@ const UINewGame = ({ onStart, onSelect }: UINewGameProps) => {
 
   return (
     <UIBackdrop open={open}>
-      <h1 className="text-white text-5xl font-extrabold text-center">
-        Choose Your Favorite Color
-      </h1>
-      <div className="flex flex-row w-full justify-center items-center my-8">
+      <UITitle message="Choose Your Favorite Color" sx="text-5xl " />
+      <div className="grid grid-cols-3 sm:grid-cols-6 my-8">
         <SelectButton
           id="white"
           onClick={handleSelect}
