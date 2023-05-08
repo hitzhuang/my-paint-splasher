@@ -29,6 +29,7 @@ const PauseIconButton = ({ onClick }: PauseIconButtonProps) => {
       />
     </svg>
   );
+
   const ContinueIcon = () => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -45,8 +46,9 @@ const PauseIconButton = ({ onClick }: PauseIconButtonProps) => {
       />
     </svg>
   );
+
   return (
-    <div className="absolute top-2 right-2">
+    <div className="absolute top-2 right-14">
       <button
         onClick={handleClick}
         className="border-stone-100 border-white/30 border-2 text-white text-4xl bg-black/10 p-2 active:scale-90"

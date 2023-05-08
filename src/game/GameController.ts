@@ -41,7 +41,7 @@ class GameController {
 
   start() {
     this.score = 0;
-    this.soundMgr.bgMusic.play();
+    this.soundMgr.playBgMusic();
     this.reset();
     this.continue();
   }
@@ -51,11 +51,11 @@ class GameController {
     window.addEventListener('click', this.fireEventListener, true);
     this.enemyInterval = this.spawnEnemies();
     this.gamePaused = false;
-    this.soundMgr.bgMusic.mute(false);
+    this.soundMgr.playBgMusic('continue');
   }
 
   pause() {
-    this.soundMgr.bgMusic.mute(true);
+    this.soundMgr.playBgMusic('paused');
     this.gamePaused = true;
     window.removeEventListener('click', this.fireEventListener, true);
     clearInterval(this.enemyInterval);
@@ -68,7 +68,7 @@ class GameController {
     }
     this.pause();
     this.reset();
-    this.soundMgr.bgMusic.stop();
+    this.soundMgr.playBgMusic('stop');
   }
 
   update(props: CanvasProps) {

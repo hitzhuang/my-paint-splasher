@@ -6,6 +6,7 @@ import UIScore from './UIScore';
 import UINewGame from './UINewGame';
 import UIGameOver from './UIGameOver';
 import PauseIconButton from './PauseIconButton';
+import MuteIconButton from './MuteIconButton';
 
 const ShooterGame = () => {
   const updateStatus = (status: string) => {
@@ -26,19 +27,19 @@ const ShooterGame = () => {
     }
     setGame(game);
   };
-  const [status, setStatus] = useState('');
+  const [status, setStatus] = useState('game_init');
   const [game, setGame] = useState<GameController>(
     new GameController(updateStatus)
   );
 
   useEffect(() => {
-    game.updateStatus('new_game');
+    game.updateStatus('game_new');
     return () => game.shutdown();
   }, [game]);
 
   const renderMenuPopup = () => {
     switch (status) {
-      case 'new_game':
+      case 'game_new':
         return (
           <UINewGame
             onStart={() => game.updateStatus('restart')}
@@ -52,16 +53,22 @@ const ShooterGame = () => {
     }
   };
 
+  const IsPlaying = () =>
+    status !== 'game_init' && status !== 'game_new' && status !== 'game_over';
+
   return (
     <GameContent>
       <Canvas game={game} />
-      <PauseIconButton
-        onClick={(paused) =>
-          paused ? game.updateStatus('paused') : game.updateStatus('continue')
-        }
-      />
       {renderMenuPopup()}
       <UIScore score={game?.score} highScore={game?.highScore} />
+      <MuteIconButton onClick={(muted) => game.soundMgr.mute(muted)} />
+      {IsPlaying() && (
+        <PauseIconButton
+          onClick={(paused) =>
+            paused ? game.updateStatus('paused') : game.updateStatus('continue')
+          }
+        />
+      )}
     </GameContent>
   );
 };

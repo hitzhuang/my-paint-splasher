@@ -1,5 +1,6 @@
 export const ProjectileDefaultRadius = 8;
 export const GAME_HIGH_SCORE = 'shooter-game-highscore';
+export const GAME_MUTED = 'shooter-game-muted';
 
 export const hitScore = 100;
 export const hitExtraScore = 150;
@@ -13,3 +14,11 @@ export const BG_MUSIC_URL_EASY = process.env.PUBLIC_URL + '/assets/easy.mp3';
 
 export const getDistance = (dx: number, dy: number) =>
   Math.sqrt(dx * dx + dy * dy);
+
+export const getGameMuted = () => {
+  let muted = true;
+  let gameMuted = localStorage.getItem(GAME_MUTED);
+  if (!gameMuted || gameMuted === 'true') muted = true;
+  else muted = false;
+  return muted;
+};

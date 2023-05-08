@@ -6,7 +6,7 @@ interface UIScoreProps {
 const UIScore = ({ score = 0, highScore = 0 }: UIScoreProps) => {
   return (
     <div
-      className={`absolute left-8 top-5 text-white 
+      className={`absolute left-4 top-2 text-white 
       flex flex-col justify-items-start`}
     >
       <div className="text-xl sm:text-2xl">

@@ -1,32 +1,68 @@
 import { Howl } from 'howler';
 import {
   BG_MUSIC_URL_EASY,
+  GAME_MUTED,
   SFX_URL_FIRE,
   SFX_URL_HIT,
   SfxTypes,
+  getGameMuted,
 } from './Constant';
 
 class SoundManager {
-  bgMusic: Howl;
+  bgMusic!: Howl;
   fireSFX: Howl;
   hitSFX: Howl;
   muted: boolean;
 
   constructor() {
-    this.muted = false;
+    this.muted = getGameMuted();
     this.fireSFX = new Howl({ src: [SFX_URL_FIRE] });
     this.hitSFX = new Howl({ src: [SFX_URL_HIT] });
-    this.bgMusic = new Howl({
-      src: [BG_MUSIC_URL_EASY],
-      loop: true,
-      volume: 0.2,
-    });
+  }
+
+  mute(muted: boolean) {
+    this.muted = muted;
+    localStorage.setItem(GAME_MUTED, muted.toString());
+  }
+
+  setLevel(level: string = 'moderate') {
+    switch (level) {
+      case 'easy':
+        this.bgMusic = new Howl({
+          src: [BG_MUSIC_URL_EASY],
+          loop: true,
+          volume: 0.2,
+        });
+        break;
+      case 'hard':
+        this.bgMusic = new Howl({
+          src: [BG_MUSIC_URL_EASY],
+          loop: true,
+          volume: 0.2,
+        });
+        break;
+      default:
+        this.bgMusic = new Howl({
+          src: [BG_MUSIC_URL_EASY],
+          loop: true,
+          volume: 0.2,
+        });
+        break;
+    }
   }
 
   playBgMusic(status: string = 'play') {
+    if (this.muted) return;
+    if (!this.bgMusic) return;
     switch (status) {
       case 'paused':
-        this.bgMusic.pause();
+        this.bgMusic.mute(true);
+        break;
+      case 'continue':
+        this.bgMusic.mute(false);
+        break;
+      case 'stop':
+        this.bgMusic.stop();
         break;
       default:
         this.bgMusic.play();
@@ -46,7 +82,11 @@ class SoundManager {
     }
   }
 
-  shutdown() {}
+  shutdown() {
+    this.bgMusic.unload();
+    this.fireSFX.unload();
+    this.hitSFX.unload();
+  }
 }
 
 export default SoundManager;
