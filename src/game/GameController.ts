@@ -44,31 +44,43 @@ class GameController {
     this.soundMgr.playBgMusic();
     this.reset();
     this.continue();
+    this.updateStatus('restart');
   }
 
   continue() {
     this.fireEventListener = this.fire.bind(this);
-    window.addEventListener('click', this.fireEventListener, true);
+    document
+      .getElementById('canvas')
+      ?.addEventListener('click', this.fireEventListener, true);
     this.enemyInterval = this.spawnEnemies();
     this.gamePaused = false;
     this.soundMgr.playBgMusic('continue');
+    this.updateStatus('continue');
   }
 
-  pause() {
+  paused() {
+    document
+      .getElementById('canvas')
+      ?.removeEventListener('click', this.fireEventListener, true);
     this.soundMgr.playBgMusic('paused');
     this.gamePaused = true;
-    window.removeEventListener('click', this.fireEventListener, true);
     clearInterval(this.enemyInterval);
-    this.projectiles.pop(); // can not avoid last click, so remove the last projectitle
+    this.updateStatus('paused');
   }
 
   shutdown() {
     if (this.highScore < this.score) {
       localStorage.setItem(GAME_HIGH_SCORE, this.score.toString());
     }
-    this.pause();
+    this.paused();
     this.reset();
     this.soundMgr.playBgMusic('stop');
+    this.updateStatus('game_shutdown');
+  }
+
+  selectPlayerColor(color: string) {
+    this.player.color = color;
+    this.soundMgr.playSFX(SfxTypes.FIRE);
   }
 
   update(props: CanvasProps) {
@@ -84,7 +96,10 @@ class GameController {
         else projectile.update(props);
       });
       this.enemies.forEach((enemy: Enemy, index: number) => {
-        if (enemy.isPlayerHit()) this.updateStatus('game_over');
+        if (enemy.isPlayerHit()) {
+          this.updateStatus('game_over');
+          this.shutdown();
+        }
         this.particles = [
           ...this.particles,
           ...enemy.updateDamaged(this.soundMgr, this.projectiles, (score) => {

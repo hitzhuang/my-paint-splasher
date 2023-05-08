@@ -9,52 +9,33 @@ import PauseIconButton from './PauseIconButton';
 import MuteIconButton from './MuteIconButton';
 
 const ShooterGame = () => {
-  const updateStatus = (status: string) => {
-    setStatus(status);
-    switch (status) {
-      case 'game_over':
-        game.shutdown();
-        break;
-      case 'restart':
-        game.start();
-        break;
-      case 'paused':
-        game.pause();
-        break;
-      case 'continue':
-        game.continue();
-        break;
-    }
-    setGame(game);
-  };
-  const [status, setStatus] = useState('game_init');
-  const [game, setGame] = useState<GameController>(
-    new GameController(updateStatus)
+  const [status, setStatus] = useState('game_new');
+  const [game] = useState<GameController>(
+    new GameController((status) => setStatus(status))
   );
 
   useEffect(() => {
-    game.updateStatus('game_new');
+    setStatus('game_new');
     return () => game.shutdown();
   }, [game]);
+
+  const IsPlaying = () => status !== 'game_new' && status !== 'game_shutdown';
 
   const renderMenuPopup = () => {
     switch (status) {
       case 'game_new':
         return (
           <UINewGame
-            onStart={() => game.updateStatus('restart')}
-            onSelect={(color) => (game.player.color = color)}
+            onStart={() => game.start()}
+            onSelect={(color) => game.selectPlayerColor(color)}
           />
         );
-      case 'game_over':
-        return <UIGameOver onRestart={() => game.updateStatus('restart')} />;
+      case 'game_shutdown':
+        return <UIGameOver onRestart={() => game.start()} />;
       default:
         return null;
     }
   };
-
-  const IsPlaying = () =>
-    status !== 'game_init' && status !== 'game_new' && status !== 'game_over';
 
   return (
     <GameContent>
@@ -64,9 +45,7 @@ const ShooterGame = () => {
       <MuteIconButton onClick={(muted) => game.soundMgr.mute(muted)} />
       {IsPlaying() && (
         <PauseIconButton
-          onClick={(paused) =>
-            paused ? game.updateStatus('paused') : game.updateStatus('continue')
-          }
+          onClick={(paused) => (paused ? game.paused() : game.continue())}
         />
       )}
     </GameContent>
