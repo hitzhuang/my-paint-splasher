@@ -1,15 +1,15 @@
 import { useState } from 'react';
 import ActionButton from './ActionButton';
-import SelectButton from './SelectButton';
+import OptionButton from './OptionButton';
 import UIBackdrop from './UIBackdrop';
 import UITitle from './UITitle';
 
 interface UINewGameProps {
-  onStart: () => void;
+  onNext: () => void;
   onSelect: (color: string) => void;
 }
 
-const UINewGame = ({ onStart, onSelect }: UINewGameProps) => {
+const UINewGame = ({ onNext, onSelect }: UINewGameProps) => {
   const [open, setOpen] = useState(true);
   const [color, setColor] = useState('white');
   const handleSelect = (selectedColor: string) => {
@@ -37,49 +37,49 @@ const UINewGame = ({ onStart, onSelect }: UINewGameProps) => {
   };
   const handleClick = () => {
     setOpen(false);
-    setTimeout(() => onStart(), 500);
+    setTimeout(() => onNext(), 500);
   };
 
   return (
     <UIBackdrop open={open}>
       <UITitle message="Choose Your Favorite Color" sx="text-5xl" />
       <div className="grid grid-cols-3 sm:grid-cols-6 my-8">
-        <SelectButton
+        <OptionButton
           id="white"
           onClick={handleSelect}
           color={`bg-white ${
-            color === 'white' ? 'border-gray/50' : 'border-white'
+            color === 'white' ? 'border-gray-400/50' : 'border-white'
           }`}
         />
-        <SelectButton
+        <OptionButton
           id="red-300"
           onClick={handleSelect}
           color={`bg-red-300 ${
             color === 'red-300' ? 'border-white/50' : `border-red-300`
           }`}
         />
-        <SelectButton
+        <OptionButton
           id="yellow-200"
           onClick={handleSelect}
           color={`bg-yellow-200 ${
             color === 'yellow-200' ? 'border-white/80' : `border-yellow-200`
           }`}
         />
-        <SelectButton
+        <OptionButton
           id="green-300"
           onClick={handleSelect}
           color={`bg-green-300 ${
             color === 'green-300' ? 'border-white/70' : `border-green-300`
           }`}
         />
-        <SelectButton
+        <OptionButton
           id="purple-300"
           onClick={handleSelect}
           color={`bg-purple-300 ${
             color === 'purple-300' ? 'border-white/50' : `border-purple-300`
           }`}
         />
-        <SelectButton
+        <OptionButton
           id="blue-300"
           onClick={handleSelect}
           color={`bg-blue-300 ${
@@ -87,7 +87,7 @@ const UINewGame = ({ onStart, onSelect }: UINewGameProps) => {
           }`}
         />
       </div>
-      <ActionButton label="START" onClick={handleClick} />
+      <ActionButton label="Next" onClick={handleClick} />
     </UIBackdrop>
   );
 };

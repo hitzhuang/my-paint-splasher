@@ -1,5 +1,7 @@
 import {
+  GAME_DIFFICULTY,
   GAME_HIGH_SCORE,
+  GameLevelProps,
   ProjectileDefaultRadius,
   SfxTypes,
   getDistance,
@@ -12,9 +14,10 @@ import Projectile from './Projectile';
 import SoundManager from './SoundManager';
 
 class GameController {
-  player: Player;
   score!: number;
   highScore!: number;
+  player: Player;
+  soundMgr: SoundManager;
   projectiles!: Array<Projectile>;
   particles!: Array<Particle>;
   enemies!: Array<Enemy>;
@@ -22,7 +25,11 @@ class GameController {
   gamePaused!: boolean;
   updateStatus: (status: string) => void;
   fireEventListener: any;
-  soundMgr: SoundManager;
+  gameLevelProps: {
+    spawnTime: number;
+    velocity: number;
+    score: number;
+  };
 
   constructor(updateStatus: (status: string) => void) {
     this.soundMgr = new SoundManager();
@@ -30,6 +37,7 @@ class GameController {
     this.reset();
     this.updateStatus = updateStatus;
     this.gamePaused = false;
+    this.gameLevelProps = GameLevelProps.moderate;
   }
 
   reset() {
@@ -37,6 +45,16 @@ class GameController {
     this.projectiles = [];
     this.enemies = [];
     this.particles = [];
+  }
+
+  renew() {
+    let canvas: any = document.getElementById('canvas');
+    let context = canvas?.getContext('2d');
+    context.clearRect(0, 0, canvas?.width, canvas?.height);
+
+    this.score = 0;
+    this.shutdown();
+    this.updateStatus('game_new');
   }
 
   start() {
@@ -69,52 +87,77 @@ class GameController {
   }
 
   shutdown() {
+    this.updateStatus('game_shutdown');
     if (this.highScore < this.score) {
       localStorage.setItem(GAME_HIGH_SCORE, this.score.toString());
     }
-    this.paused();
     this.reset();
+    this.paused();
     this.soundMgr.playBgMusic('stop');
-    this.updateStatus('game_shutdown');
   }
 
   selectPlayerColor(color: string) {
-    this.player.color = color;
-    this.soundMgr.playSFX(SfxTypes.FIRE);
+    if (this.player.color !== color) {
+      this.player.color = color;
+      this.soundMgr.playSFX(SfxTypes.FIRE);
+    }
+  }
+
+  selectLevel(level: string) {
+    switch (level) {
+      case 'easy':
+        this.gameLevelProps = GameLevelProps.easy;
+        break;
+      case 'moderate':
+        this.gameLevelProps = GameLevelProps.moderate;
+        break;
+      case 'challenging':
+        this.gameLevelProps = GameLevelProps.challenging;
+        break;
+    }
+    if (level !== this.soundMgr.gameLevel) {
+      this.soundMgr.playSFX(SfxTypes.FIRE);
+      this.soundMgr.setLevel(level);
+      localStorage.setItem(GAME_DIFFICULTY, level);
+    }
+  }
+
+  refresh(props: CanvasProps) {
+    let ctx = props.ctx;
+    if (ctx) {
+      ctx.fillStyle = 'rgba(0,0,0,0.1)';
+      ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    }
   }
 
   update(props: CanvasProps) {
     if (this.gamePaused) return;
 
-    let ctx = props.ctx;
-    if (ctx) {
-      ctx.fillStyle = 'rgba(0,0,0,0.1)';
-      ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-      this.player.update(props);
-      this.projectiles.forEach((projectile: Projectile, index: number) => {
-        if (projectile.toRemove) this.projectiles.splice(index, 1);
-        else projectile.update(props);
-      });
-      this.enemies.forEach((enemy: Enemy, index: number) => {
-        if (enemy.isPlayerHit()) {
-          this.updateStatus('game_over');
-          this.shutdown();
-        }
-        this.particles = [
-          ...this.particles,
-          ...enemy.updateDamaged(this.soundMgr, this.projectiles, (score) => {
-            this.score += score;
-            this.updateStatus(this.score.toString());
-          }),
-        ];
-        if (enemy.toRemove) this.enemies.splice(index, 1);
-        else enemy.update(props);
-      });
-      this.particles.forEach((particle: Particle, index: number) => {
-        if (particle.toRemove) this.particles.splice(index, 1);
-        else particle.update(props);
-      });
-    }
+    this.refresh(props);
+    this.player.update(props);
+    this.projectiles.forEach((projectile: Projectile, index: number) => {
+      if (projectile.toRemove) this.projectiles.splice(index, 1);
+      else projectile.update(props);
+    });
+    this.enemies.forEach((enemy: Enemy, index: number) => {
+      if (enemy.isPlayerHit()) {
+        this.shutdown();
+        setTimeout(() => this.updateStatus('game_over'), 500);
+      }
+      this.particles = [
+        ...this.particles,
+        ...enemy.updateDamaged(this.soundMgr, this.projectiles, (score) => {
+          this.score += score + this.gameLevelProps.score;
+          this.updateStatus(this.score.toString());
+        }),
+      ];
+      if (enemy.toRemove) this.enemies.splice(index, 1);
+      else enemy.update(props);
+    });
+    this.particles.forEach((particle: Particle, index: number) => {
+      if (particle.toRemove) this.particles.splice(index, 1);
+      else particle.update(props);
+    });
   }
 
   offset(x: number, y: number) {
@@ -124,8 +167,6 @@ class GameController {
   }
 
   fire(e: MouseEvent) {
-    if (this.gamePaused) return;
-
     let dx = e.clientX - this.player.x;
     let dy = e.clientY - this.player.y;
     let dv = getDistance(dx, dy);
@@ -167,7 +208,10 @@ class GameController {
       let dx = x - this.player.x;
       let dy = y - this.player.y;
       let dv = getDistance(dx, dy);
-      let velocity = { x: (dx / dv) * -1, y: (dy / dv) * -1 };
+      let velocity = {
+        x: (dx / dv) * this.gameLevelProps.velocity,
+        y: (dy / dv) * this.gameLevelProps.velocity,
+      };
       let color = `hsl(${Math.random() * 360}, 60%, 60%)`;
       let radius = Math.floor(
         Math.random() * (this.player.radius * 3 - ProjectileDefaultRadius) +
@@ -175,7 +219,7 @@ class GameController {
       );
       this.enemies.push(new Enemy(this.player, x, y, velocity, color, radius));
       index = index + 1 >= 4 ? 0 : index + 1;
-    }, 1500);
+    }, this.gameLevelProps.spawnTime);
   }
 }
 

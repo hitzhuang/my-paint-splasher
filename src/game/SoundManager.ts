@@ -1,6 +1,9 @@
 import { Howl } from 'howler';
 import {
-  BG_MUSIC_URL_EASY,
+  BG_MUSIC_URL_1,
+  BG_MUSIC_URL_2,
+  BG_MUSIC_URL_3,
+  GAME_DIFFICULTY,
   GAME_MUTED,
   SFX_URL_FIRE,
   SFX_URL_HIT,
@@ -13,39 +16,44 @@ class SoundManager {
   fireSFX: Howl;
   hitSFX: Howl;
   muted: boolean;
+  gameLevel!: string;
 
   constructor() {
     this.muted = getGameMuted();
-    this.fireSFX = new Howl({ src: [SFX_URL_FIRE] });
-    this.hitSFX = new Howl({ src: [SFX_URL_HIT] });
+    this.fireSFX = new Howl({ src: [SFX_URL_FIRE], volume: 0.5 });
+    this.hitSFX = new Howl({ src: [SFX_URL_HIT], volume: 0.5 });
+    let difficulty = localStorage.getItem(GAME_DIFFICULTY);
+    this.setLevel(difficulty ?? 'moderate');
   }
 
   mute(muted: boolean) {
     this.muted = muted;
+    this.bgMusic.mute(muted);
     localStorage.setItem(GAME_MUTED, muted.toString());
   }
 
   setLevel(level: string = 'moderate') {
+    this.gameLevel = level;
     switch (level) {
       case 'easy':
         this.bgMusic = new Howl({
-          src: [BG_MUSIC_URL_EASY],
+          src: [BG_MUSIC_URL_1],
           loop: true,
-          volume: 0.2,
+          volume: 0.3,
         });
         break;
-      case 'hard':
+      case 'challenging':
         this.bgMusic = new Howl({
-          src: [BG_MUSIC_URL_EASY],
+          src: [BG_MUSIC_URL_3],
           loop: true,
-          volume: 0.2,
+          volume: 0.3,
         });
         break;
       default:
         this.bgMusic = new Howl({
-          src: [BG_MUSIC_URL_EASY],
+          src: [BG_MUSIC_URL_2],
           loop: true,
-          volume: 0.2,
+          volume: 0.3,
         });
         break;
     }

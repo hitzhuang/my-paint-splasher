@@ -5,7 +5,7 @@ My paint splasher, a HTML5 shooting game made by using ReactJS and canvas. It's 
 Special thanks for using free sound effects and background music from pixabay. https://pixabay.com
 
 [BACKGROUND MUSIC]
-Easy Background Music by <a href="https://pixabay.com/users/lesfm-22579021/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=music&amp;utm_content=11152">Lesfm</a> from <a href="https://pixabay.com//?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=music&amp;utm_content=11152">Pixabay</a>
+Easy Background Music by <a href="https://pixabay.com/users/music_for_videos-26992513/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=music&amp;utm_content=111372">Music_For_Videos</a> from <a href="https://pixabay.com//?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=music&amp;utm_content=111372">Pixabay</a>
 
 Moderate Background Music by <a href="https://pixabay.com/users/comastudio-26079283/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=142819">ComaStudio</a> from <a href="https://pixabay.com/music//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=142819">Pixabay</a>
 

@@ -7,6 +7,7 @@ import UINewGame from './UINewGame';
 import UIGameOver from './UIGameOver';
 import PauseIconButton from './PauseIconButton';
 import MuteIconButton from './MuteIconButton';
+import UIGameLevel from './UIGameLevel';
 
 const ShooterGame = () => {
   const [status, setStatus] = useState('game_new');
@@ -19,19 +20,33 @@ const ShooterGame = () => {
     return () => game.shutdown();
   }, [game]);
 
-  const IsPlaying = () => status !== 'game_new' && status !== 'game_shutdown';
+  const IsPlaying = () =>
+    status !== 'game_new' && status !== 'game_level' && status !== 'game_over';
 
   const renderMenuPopup = () => {
     switch (status) {
       case 'game_new':
         return (
           <UINewGame
-            onStart={() => game.start()}
             onSelect={(color) => game.selectPlayerColor(color)}
+            onNext={() => setStatus('game_level')}
           />
         );
-      case 'game_shutdown':
-        return <UIGameOver onRestart={() => game.start()} />;
+      case 'game_level':
+        return (
+          <UIGameLevel
+            onSelect={(level) => game.selectLevel(level)}
+            onBack={() => setStatus('game_new')}
+            onStart={() => game.start()}
+          />
+        );
+      case 'game_over':
+        return (
+          <UIGameOver
+            onRestart={() => game.start()}
+            onNewGame={() => game.renew()}
+          />
+        );
       default:
         return null;
     }
