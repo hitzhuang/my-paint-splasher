@@ -59,7 +59,6 @@ class GameController {
 
   start() {
     this.score = 0;
-    this.soundMgr.playBgMusic();
     this.reset();
     this.continue();
     this.updateStatus('restart');
@@ -70,19 +69,19 @@ class GameController {
     document
       .getElementById('canvas')
       ?.addEventListener('click', this.fireEventListener, true);
-    this.enemyInterval = this.spawnEnemies();
     this.gamePaused = false;
+    this.enemyInterval = this.spawnEnemies();
     this.soundMgr.playBgMusic('continue');
     this.updateStatus('continue');
   }
 
-  paused() {
+  paused(bgMusic: string = 'paused') {
     document
       .getElementById('canvas')
       ?.removeEventListener('click', this.fireEventListener, true);
-    this.soundMgr.playBgMusic('paused');
-    this.gamePaused = true;
     clearInterval(this.enemyInterval);
+    this.gamePaused = true;
+    this.soundMgr.playBgMusic(bgMusic);
     this.updateStatus('paused');
   }
 
@@ -92,8 +91,7 @@ class GameController {
       localStorage.setItem(GAME_HIGH_SCORE, this.score.toString());
     }
     this.reset();
-    this.paused();
-    this.soundMgr.playBgMusic('stop');
+    this.paused('stop');
   }
 
   selectPlayerColor(color: string) {

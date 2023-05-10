@@ -17,18 +17,29 @@ class SoundManager {
   hitSFX: Howl;
   muted: boolean;
   gameLevel!: string;
+  playingBgMusicId: number;
+  pausedBgMusicSeek!: number;
 
   constructor() {
     this.muted = getGameMuted();
-    this.fireSFX = new Howl({ src: [SFX_URL_FIRE], volume: 0.5 });
-    this.hitSFX = new Howl({ src: [SFX_URL_HIT], volume: 0.5 });
+    this.playingBgMusicId = -1;
+    this.fireSFX = new Howl({
+      src: [SFX_URL_FIRE],
+      volume: 0.5,
+      mute: this.muted,
+    });
+    this.hitSFX = new Howl({
+      src: [SFX_URL_HIT],
+      volume: 0.5,
+      mute: this.muted,
+    });
     let difficulty = localStorage.getItem(GAME_DIFFICULTY);
     this.setLevel(difficulty ?? 'moderate');
   }
 
   mute(muted: boolean) {
+    Howler.mute(muted);
     this.muted = muted;
-    this.bgMusic.mute(muted);
     localStorage.setItem(GAME_MUTED, muted.toString());
   }
 
@@ -40,6 +51,7 @@ class SoundManager {
           src: [BG_MUSIC_URL_1],
           loop: true,
           volume: 0.3,
+          mute: this.muted,
         });
         break;
       case 'challenging':
@@ -47,6 +59,7 @@ class SoundManager {
           src: [BG_MUSIC_URL_3],
           loop: true,
           volume: 0.3,
+          mute: this.muted,
         });
         break;
       default:
@@ -54,32 +67,43 @@ class SoundManager {
           src: [BG_MUSIC_URL_2],
           loop: true,
           volume: 0.3,
+          mute: this.muted,
         });
         break;
     }
   }
 
   playBgMusic(status: string = 'play') {
-    if (this.muted) return;
     if (!this.bgMusic) return;
     switch (status) {
       case 'paused':
-        this.bgMusic.mute(true);
+        this.bgMusic.pause();
+        this.pausedBgMusicSeek = this.bgMusic.seek();
         break;
       case 'continue':
-        this.bgMusic.mute(false);
+        if (this.playingBgMusicId === -1) {
+          this.playBgMusic();
+        } else {
+          this.bgMusic.seek(this.pausedBgMusicSeek, this.playingBgMusicId);
+          this.bgMusic.play(this.playingBgMusicId);
+        }
         break;
       case 'stop':
-        this.bgMusic.stop();
+        this.bgMusic.fade(
+          this.bgMusic.volume(),
+          0,
+          1000,
+          this.playingBgMusicId
+        );
+        this.playingBgMusicId = -1;
         break;
       default:
-        this.bgMusic.play();
+        this.playingBgMusicId = this.bgMusic.play();
         break;
     }
   }
 
   playSFX(type: string) {
-    if (this.muted) return;
     switch (type) {
       case SfxTypes.FIRE:
         this.fireSFX.play();
