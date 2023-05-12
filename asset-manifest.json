@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/my-paint-splasher/static/css/main.12891e36.css",
-    "main.js": "/my-paint-splasher/static/js/main.6bc6a805.js",
+    "main.js": "/my-paint-splasher/static/js/main.57489010.js",
     "static/js/787.611df15a.chunk.js": "/my-paint-splasher/static/js/787.611df15a.chunk.js",
     "index.html": "/my-paint-splasher/index.html",
     "main.12891e36.css.map": "/my-paint-splasher/static/css/main.12891e36.css.map",
-    "main.6bc6a805.js.map": "/my-paint-splasher/static/js/main.6bc6a805.js.map",
+    "main.57489010.js.map": "/my-paint-splasher/static/js/main.57489010.js.map",
     "787.611df15a.chunk.js.map": "/my-paint-splasher/static/js/787.611df15a.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.12891e36.css",
-    "static/js/main.6bc6a805.js"
+    "static/js/main.57489010.js"
   ]
 }
