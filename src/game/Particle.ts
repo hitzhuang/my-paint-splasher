@@ -1,17 +1,22 @@
 import { CanvasProps } from './GameObject';
+import HitScore from './HitScore';
 import Projectile, { IVelocity } from './Projectile';
 
 class Particle extends Projectile {
   alpha: number;
+  hitScore?: HitScore;
+
   constructor(
     x: number,
     y: number,
     velocity: IVelocity,
-    color?: string,
-    radius?: number
+    color: string,
+    radius: number,
+    hitScore?: HitScore
   ) {
     super(x, y, velocity, color, radius);
     this.alpha = 1;
+    this.hitScore = hitScore ?? undefined;
   }
 
   draw(props: CanvasProps): void {
@@ -29,6 +34,7 @@ class Particle extends Projectile {
     this.velocity.y *= 0.98;
     this.alpha -= 0.01;
     if (this.alpha < 0) this.alpha = 0;
+    this.hitScore?.update(props);
     super.update(props);
   }
 

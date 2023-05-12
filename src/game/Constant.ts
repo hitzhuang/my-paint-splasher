@@ -13,7 +13,7 @@ export const GameLevelProps: any = {
   easy: {
     spawnTime: 1500,
     velocity: -0.8,
-    bonus: -100,
+    bonus: -80,
   },
   moderate: {
     spawnTime: 1200,
@@ -23,7 +23,7 @@ export const GameLevelProps: any = {
   challenging: {
     spawnTime: 500,
     velocity: -1,
-    bonus: 100,
+    bonus: 250,
   },
 };
 export const SFX_URL_FIRE = process.env.PUBLIC_URL + '/assets/fire.mp3';

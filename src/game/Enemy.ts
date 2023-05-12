@@ -10,6 +10,7 @@ import Player from './Player';
 import Projectile, { IVelocity } from './Projectile';
 import Particle from './Particle';
 import SoundManager from './SoundManager';
+import HitScore from './HitScore';
 
 class Enemy extends Projectile {
   player: Player;
@@ -38,6 +39,7 @@ class Enemy extends Projectile {
   updateDamaged(
     soundMgr: SoundManager,
     projectiles: Array<Projectile>,
+    scoreBonus: number,
     updateScore: (score: number) => void
   ) {
     let particles: Array<Particle> = [];
@@ -52,19 +54,20 @@ class Enemy extends Projectile {
 
         // enemy shrinked
         let radius = this.radius;
+        let score = scoreBonus;
         radius -= p.radius * 2.5;
         if (radius > 0) {
-          updateScore(hitScore);
+          score += hitScore;
+          updateScore(score);
         } else {
-          updateScore(hitExtraScore);
+          score += hitExtraScore;
+          updateScore(score);
           radius = 0;
         }
         gsap.to(this, { radius });
 
         // particle effects
         let strength = (Math.random() * this.radius) / 2;
-        // if (strength < 5) strength = 5;
-        // else if (strength > 12) strength = 12;
         if (strength < 5) strength = 10;
         else if (strength > 24) strength = 24;
         for (let i = 0; i < strength; i++) {
@@ -73,7 +76,11 @@ class Enemy extends Projectile {
             y: (Math.random() - 0.5) * 8,
           };
           let radius = Math.random() * 3;
-          particles.push(new Particle(p.x, p.y, velocity, this.color, radius));
+          let particle = new Particle(p.x, p.y, velocity, this.color, radius);
+          if (i === 0) {
+            particle.hitScore = new HitScore(p.x, p.y, p.color, score);
+          }
+          particles.push(particle);
         }
       }
     });

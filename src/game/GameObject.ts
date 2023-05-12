@@ -7,7 +7,7 @@ export interface CanvasProps {
 class GameObject {
   x: number;
   y: number;
-  color?: string;
+  color: string;
 
   constructor(x: number = 0, y: number = 0, color: string = '#ffffff') {
     this.x = x;

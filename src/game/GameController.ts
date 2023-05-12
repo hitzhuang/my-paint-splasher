@@ -12,6 +12,7 @@ import Enemy from './Enemy';
 import Particle from './Particle';
 import Projectile from './Projectile';
 import SoundManager from './SoundManager';
+import HitScore from './HitScore';
 
 class GameController {
   score!: number;
@@ -20,6 +21,7 @@ class GameController {
   soundMgr: SoundManager;
   projectiles!: Array<Projectile>;
   particles!: Array<Particle>;
+  hitScores!: Array<HitScore>;
   enemies!: Array<Enemy>;
   enemyInterval!: any;
   gamePaused!: boolean;
@@ -45,6 +47,7 @@ class GameController {
     this.projectiles = [];
     this.enemies = [];
     this.particles = [];
+    this.hitScores = [];
   }
 
   renew() {
@@ -144,17 +147,30 @@ class GameController {
       }
       this.particles = [
         ...this.particles,
-        ...enemy.updateDamaged(this.soundMgr, this.projectiles, (score) => {
-          this.score += score + this.gameLevelProps.bonus;
-          this.updateStatus(this.score.toString());
-        }),
+        ...enemy.updateDamaged(
+          this.soundMgr,
+          this.projectiles,
+          this.gameLevelProps.bonus,
+          (score) => {
+            this.score += score;
+            this.updateStatus(this.score.toString());
+          }
+        ),
       ];
       if (enemy.toRemove) this.enemies.splice(index, 1);
       else enemy.update(props);
     });
     this.particles.forEach((particle: Particle, index: number) => {
+      if (particle.hitScore) {
+        this.hitScores.push(particle.hitScore);
+        this.particles[index].hitScore = undefined;
+      }
       if (particle.toRemove) this.particles.splice(index, 1);
       else particle.update(props);
+    });
+    this.hitScores.forEach((hitScore: HitScore, index: number) => {
+      if (hitScore.toRemove) this.particles.splice(index, 1);
+      else hitScore.update(props);
     });
   }
 
