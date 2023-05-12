@@ -28,7 +28,7 @@ class GameController {
   gameLevelProps: {
     spawnTime: number;
     velocity: number;
-    score: number;
+    bonus: number;
   };
 
   constructor(updateStatus: (status: string) => void) {
@@ -145,7 +145,7 @@ class GameController {
       this.particles = [
         ...this.particles,
         ...enemy.updateDamaged(this.soundMgr, this.projectiles, (score) => {
-          this.score += score + this.gameLevelProps.score;
+          this.score += score + this.gameLevelProps.bonus;
           this.updateStatus(this.score.toString());
         }),
       ];

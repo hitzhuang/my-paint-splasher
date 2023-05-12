@@ -63,8 +63,10 @@ class Enemy extends Projectile {
 
         // particle effects
         let strength = (Math.random() * this.radius) / 2;
-        if (strength < 5) strength = 5;
-        else if (strength > 12) strength = 12;
+        // if (strength < 5) strength = 5;
+        // else if (strength > 12) strength = 12;
+        if (strength < 5) strength = 10;
+        else if (strength > 24) strength = 24;
         for (let i = 0; i < strength; i++) {
           let velocity = {
             x: (Math.random() - 0.5) * 8,

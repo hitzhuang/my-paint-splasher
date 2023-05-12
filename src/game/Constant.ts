@@ -11,19 +11,19 @@ export const SfxTypes = {
 };
 export const GameLevelProps: any = {
   easy: {
-    spawnTime: 2000,
+    spawnTime: 1500,
     velocity: -0.8,
-    score: -100,
+    bonus: -100,
   },
   moderate: {
-    spawnTime: 1500,
+    spawnTime: 1200,
     velocity: -1,
-    score: 0,
+    bonus: 0,
   },
   challenging: {
-    spawnTime: 1200,
-    velocity: -1.2,
-    score: 100,
+    spawnTime: 500,
+    velocity: -1,
+    bonus: 100,
   },
 };
 export const SFX_URL_FIRE = process.env.PUBLIC_URL + '/assets/fire.mp3';

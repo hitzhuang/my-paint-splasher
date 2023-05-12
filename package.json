@@ -1,6 +1,6 @@
 {
   "name": "my-paint-splasher",
-  "version": "0.2.8",
+  "version": "0.2.9",
   "homepage": "https://hitzhuang.github.io/my-paint-splasher",
   "private": true,
   "dependencies": {
